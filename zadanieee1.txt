@@ -1,0 +1,35 @@
+-----------------zadamie1
+create table pracownik (
+id_pracownika INT auto_increment primary key,
+imie varchar(40) not null,
+nazwisko varchar(45) not null,
+data_urodzenia date not null
+);
+
+INSERT INTO pracownik (imie,nazwisko,data_urodzenia) VALUES
+('Maciek','Zalecki','2000-12-12'),
+('Anna','Kowalska','1975-11-11'),
+('Jan','Mysliwski','1982-05-27');
+
+UPDATE pracownik SET data_urodzenia = '1952-05-02' WHERE id_pracownika = 1;
+---------------zadanie2
+CREATE TABLE zadanie (
+id_zadania INT AUTO_INCREMENT PRIMARY KEY,
+nazwa_zadania VARCHAR(90),
+priorytet ENUM('normalny','wysoki','niski'),
+opis TEXT null,
+pracownik int null,
+constraint fk_pracownik
+foreign key (pracownik) REFERENCES pracownik(id_pracownika)
+ON DELETE SET NULL
+);
+
+INSERT INTO zadanie (nazwa_zadania,opis,pracownik) VALUES 
+('programowanei aplikacji','zrob aplikacje dla bartka',1),
+('pomoc prezesowi','zrob kawe prezesowi',3),
+('dowoz','przywiez obiad dla firmy',2);
+
+INSERT INTO projekt (nazwa_projektu,data_rozpoczecia,data_zakonczenia,menadzer_projektu) VALUES
+('system hotelowy','2024-12-12','2026-12-12',1),
+('strona internetowa','2026-05-02','2026-01-12',2);
+
