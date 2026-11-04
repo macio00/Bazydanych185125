@@ -29,7 +29,42 @@ INSERT INTO zadanie (nazwa_zadania,opis,pracownik) VALUES
 ('pomoc prezesowi','zrob kawe prezesowi',3),
 ('dowoz','przywiez obiad dla firmy',2);
 
+ALTER TABLE zadanie alter column priorytet set default 'normalny';
+----z3
+CREATE TABLE projekt (id_projektu INT AUTO_INCREMENT PRIMARY KEY,nazwa_projektu VARCHAR(150),data_rozpoczecia DATE,data_zakonczenia DATE NULL);
+
+ALTER TABLE projekt ADD COLUMN menadzer_projektu INT,ADD CONSTRAINT fk_projekt_menadzer
+FOREIGN KEY (menadzer_projektu) REFERENCES pracownik(id_pracownika);
+
 INSERT INTO projekt (nazwa_projektu,data_rozpoczecia,data_zakonczenia,menadzer_projektu) VALUES
 ('system hotelowy','2024-12-12','2026-12-12',1),
 ('strona internetowa','2026-05-02','2026-01-12',2);
 
+ALTER TABLE zadanie ADD COLUMN projekt INT, ADD CONSTRAINT fk_zadanie_projekt FOREIGN KEY (projekt) REFERENCES projekt(id_projektu) ON DELETE CASCADE
+
+UPDATE zadanie SET projekt = 1 WHERE id_zadania IN (1,2);
+UPDATE zadanie SET projekt = 2 WHERE id_zadania = 3;
+
+----z4
+CREATE TABLE sprint (id_sprintu INT auto_increment PRIMARY KEY,numer_sprintu INT UNSIGNED,data_rozpoczecia DATE,data_zakonczenia DATE );
+
+ALTER TABLE zadanie ADD COLUMN sprint INT NULL,ADD CONSTRAINT fk_zadanie_sprint FOREIGN KEY (sprint) REFERENCES sprint(id_sprintu) ON DELETE SET NULL;
+
+INSERT INTO sprint (numer_sprintu,data_rozpoczecia,data_zakonczenia) VALUES (1,'2026-10-20','2026-10-29')
+
+UPDATE zadanie SET sprint = 1 WHERE id_zadania IN (1,2)
+
+----z5
+CREATE TABLE status ( id_statusu INT auto_increment PRIMARY KEY,nazwa_statusu VARCHAR(20))
+
+INSERT INTO status (nazwa_statusu) VALUES ('nowe'),('w realizacji'),('zamkniete');
+
+CREATE TABLE zadanie_has_status ( id_zdarzenia INT auto_increment PRIMARY KEY, id_zadania INT, id_statusu INT,data_zdarzenia DATETIME DEFAULT current_timestamp,constraint fk_zhs_zadanie FOREIGN KEY (id_zadania) REFERENCES zadanie(id_zadania) ON DELETE CASCADE, constraint fk_zhs_status FOREIGN KEY (id_statusu) REFERENCES status(id_statusu) ON DELETE cascade);
+
+INSERT INTO zadanie_has_status (id_zadania,id_statusu) VALUES (1,2),(2,1),(3,3);
+
+DELETE FROM projekt WHERE id_projektu = 1;
+
+ALTER TABLE zadanie DROP FOREIGN KEY fk_zadanie_sprint;
+
+DROP TABLE sprint;
